@@ -1,0 +1,13 @@
+{
+  "name": "angularjs-mongo-nodejs-demoapp",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "~1.0.0",
+    "express": "~4.0.0",
+    "mongodb": "~1.4.34",
+    "multichain-node": "^2.1.1-version1.0-beta1"
+  },
+  "author": "Ramesh B.N",
+  "license": "BSD",
+  "private": true
+}

@@ -1,0 +1,89 @@
+
+<html ng-app="sportsApp">
+
+<head>
+  <title>HTTP Post Example</title>
+  <style>
+    .player {
+      padding: 10px;
+    }
+  </style>
+</head>
+
+<body ng-controller="MainCtrl">
+  <h1>Hello Servers!</h1>
+  <div ng-repeat="player in players"        class="player">
+    <div><span ng-bind="player.name"></span></div>
+    <div> playing <span ng-bind="player.game"></span></div>
+	<div> age <span ng-bind="player.age"></span></div>
+  </div>
+
+  <div>
+    <form name="addForm"
+          ng-submit="addplayer()">
+      <input type="text"
+             placeholder="Name"
+             ng-model="newplayer.name"
+             required>
+			 <input type="text"
+             placeholder="Game"
+             ng-model="newplayer.game"
+             required>
+			 <input type="number"
+             placeholder="Age"
+             ng-model="newplayer.age"
+             required>
+      
+      <input type="submit"
+             value="Add"
+             ng-disabled="addForm.$invalid">
+    </form>
+	<button ng-click="getInfo()"> get multichain info</button>
+  </div>
+
+<script
+  src="angular.min.js">
+</script>
+<script>
+  angular.module('sportsApp', [])
+    .controller('MainCtrl', function($scope, $http) { 
+      
+      $scope.players = [];
+      $scope.newplayer = {};
+	  
+      var fetchPlayers = function() {
+	  
+         return $http.get('/demo/getplayers').then(function(response) {
+          $scope.players = response.data;
+        }, function(errResponse) {
+          console.error('Error while fetching players');
+        });
+      };
+
+      fetchPlayers();
+
+      $scope.addplayer = function() {
+        $http.post('/demo/insertplayer', $scope.newplayer).then(function(response) {
+		
+			fetchPlayers();
+		
+		}, function(errResponse) {
+          console.error('Error while inserting player');
+        });
+      };
+	  
+	  $scope.getInfo = function() {
+        $http.post('/demo/getInfo', $scope.newplayer).then(function(response) {
+		
+			alert(angular.toJson(response.data));
+		
+		}, function(errResponse) {
+          console.error('Error while getting info');
+        });
+      };
+
+
+    });
+</script>
+</body>
+</html>
