@@ -1,6 +1,6 @@
 var Demo = require('./demo')
 
-	module.exports = exports = function(app, db, multichain) {
+	module.exports = exports = function(app, db, multichain, socket) {
 	
 	var demo = new Demo(db, multichain);
 	
