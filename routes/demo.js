@@ -4,14 +4,22 @@
 
 var SportsDAO = require('../sports').SportsDAO;
 var AssetsDAO = require('../assets').AssetsDAO;
-
+// https://stackoverflow.com/questions/37559610/socket-io-emit-on-express-route
   
  /* The SessionHandler must be constructed with a connected db */
-function DemoHandler (db, multichain) {
+function DemoHandler (db, multichain, io) {
     "use strict";
 
     var sports = new SportsDAO(db);
 	var assets = new AssetsDAO(db, multichain);
+	
+	
+  
+
+	
+	 
+	
+    
    
 	
 	this.getInfo = function(req, res) {

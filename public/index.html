@@ -12,6 +12,7 @@
 
 <body ng-controller="MainCtrl">
   <h1>Hello Servers!</h1>
+  <button ng-click="send()"> send </button>
   <div ng-repeat="player in players"        class="player">
     <div><span ng-bind="player.name"></span></div>
     <div> playing <span ng-bind="player.game"></span></div>
@@ -39,18 +40,42 @@
              ng-disabled="addForm.$invalid">
     </form>
 	<button ng-click="getInfo()"> get multichain info</button>
+	
   </div>
 
 <script
   src="angular.min.js">
 </script>
+<script
+  src="socket.io-client/dist/socket.io.js">
+</script>
+
 <script>
   angular.module('sportsApp', [])
     .controller('MainCtrl', function($scope, $http) { 
       
       $scope.players = [];
       $scope.newplayer = {};
+	   //var socket = io(); 
+
+	 var socket = io('http://localhost:8080');
 	  
+	//   var socket = io('http://localhost:8080', {path:'/test'});
+
+	 $scope.send = function ()
+	 {
+		var msg = "test1";
+		// alert('hi');
+		 //var io1 = socket.connect();
+		socket.emit('message', msg);
+	 }
+	 
+	 socket.on('message', function(msg) {
+	 alert(msg);
+      console.log("message", msg);
+     // this.chats.push(msg);
+    });
+	
       var fetchPlayers = function() {
 	  
          return $http.get('/demo/getplayers').then(function(response) {
@@ -60,7 +85,7 @@
         });
       };
 
-      fetchPlayers();
+    //  fetchPlayers();
 
       $scope.addplayer = function() {
         $http.post('/demo/insertplayer', $scope.newplayer).then(function(response) {
