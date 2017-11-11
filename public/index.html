@@ -13,6 +13,11 @@
 <body ng-controller="MainCtrl">
   <h1>Hello Servers!</h1>
   <button ng-click="send()"> send </button>
+  
+  <button ng-click="createasset()"> createasset </button>
+  
+  <button ng-click="getasset()"> getasset </button>
+  
   <div ng-repeat="player in players"        class="player">
     <div><span ng-bind="player.name"></span></div>
     <div> playing <span ng-bind="player.game"></span></div>
@@ -69,6 +74,32 @@
 		 //var io1 = socket.connect();
 		socket.emit('message', msg);
 	 }
+	 
+	  $scope.createasset = function ()
+	 {
+		var msg = "test1";
+		// alert('hi');
+		 //var io1 = socket.connect();
+		socket.emit('createasset', msg);
+	 }
+	  socket.on('createdasset', function(msg) {
+	 alert(angular.toJson(msg));
+      console.log("message", msg);
+     // this.chats.push(msg);
+    });
+	
+	 $scope.getasset = function ()
+	 {
+		var msg = "test1";
+		// alert('hi');
+		 //var io1 = socket.connect();
+		socket.emit('getasset', msg);
+	 }
+	  socket.on('gotasset', function(msg) {
+	 alert(msg);
+      console.log("message", msg);
+     // this.chats.push(msg);
+    });
 	 
 	 socket.on('message', function(msg) {
 	 alert(msg);

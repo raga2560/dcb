@@ -58,8 +58,15 @@ var someTxId = '231a4f30e2eeba817e4277e39ca65880ff848c52694bf789c5dc0af0ac8bbc31
 	this.issue = function (someAddress,  callback) {
         "use strict";
 
-		multichain.issue({address: someAddress, asset: "zcoin", qty: 50000, units: 0.01, details: {hello: "world"}}, (err, res) => {
-		console.log(res)
+		console.log(someAddress);
+		multichain.issue({address: someAddress, asset: "zcoin1", qty: 50000, units: 0.01, details: {hello: "world"}}, (err, res) => {
+		if(err){
+			console.log(err);
+        throw err;
+		}
+		console.log(res);
+		callback(null, res);
+		
 		})
 
 

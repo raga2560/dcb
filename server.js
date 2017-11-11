@@ -115,7 +115,7 @@ server.listen(8080, function(){
 
 
 var Chat = require('./routes/Chat');
-//var User = require('./EventHandlers/User');
+var BlockChain = require('./routes/BlockChain');
 
 
 
@@ -134,12 +134,29 @@ var Chat = require('./routes/Chat');
 	
 
 
-io.sockets.on('connection', function (socket) {
+
+
+
+
+
+
+
+ 
+
+MongoClient.connect('mongodb://localhost:27017/demoapp', function(err, db) {
+    "use strict";
+    if(err) throw err;
+
+	
+	 // app.io = io;
+  // app.io = socket_io();
+
+  io.sockets.on('connection', function (socket) {
 
     // Create event handlers for this socket
     var eventHandlers = {
         chat: new Chat(app, socket)
-        //, user: new User(app, socket)
+        , blockchain: new BlockChain(app, socket, db, multichain)
     };
 
     // Bind events to handlers
@@ -156,20 +173,6 @@ io.sockets.on('connection', function (socket) {
 
 
 
-
-
-
-
-
- 
-
-MongoClient.connect('mongodb://localhost:27017/demoapp', function(err, db) {
-    "use strict";
-    if(err) throw err;
-
-	
-	 app.io = io;
-  // app.io = socket_io();
 
 
 	routes(app, db, multichain, io);
