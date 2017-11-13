@@ -31,11 +31,11 @@ routes/index.js
 routes/demo.js
 	- Functions of backend to receive calls from router. These calls in turn calls other functions
 	
-sports.js
-	- function calls that interact with mongodb collections.
+Blockchain.js, assets.js
+	- function calls that interact with multichain blockchain.
 	
 public/index.html
-	- It contains angular.js application.
+	- It contains angular.js application, for testing.
 	
 package.json
 	- The dependencies to install
