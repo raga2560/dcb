@@ -1,22 +1,23 @@
 
-Steps to run
-1. Unzip the mongo_angularjs_nodejs_demoapp.zip 
+This is Blockchain server
+1. It interacts with multichain or hyperledger via sockets
+
 2. Run the command
 	npm install
 3. Run the command
 	node server.js
 4. Go to browser
 	http://localhost:8080/public/index.html
-5. Enter player names
 
 
-Description of what demoapp does
+
+Description of what app does
 ---------------------------------
 This app demonstrates, use of 
 1. mongodb to store data
-2. use of node.js to interact with mongodb
+2. use of node.js as blockchain server to interact with mongodb and blockchain
 3. use of angular.js to take data from browser and insert into mongodb.
-4. integration of mongodb, node.js, angular.js
+4. integration of mongodb, node.js, angular.js, multichain blockchain
 
 
 File organization
