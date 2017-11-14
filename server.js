@@ -61,23 +61,6 @@ io.on("connection", function(socket) {
  app.use('/images',express.static(__dirname + '/images'));
  app.use('/public',express.static(__dirname + '/public'));
  
- /*
- io.on('connection', function(socket){
-  socket.on('chat message', function(msg){
-    io.emit('chat message', msg);
-  });
-  
-  socket.on('message', function(msg){
-    io.emit('message', msg+1);
-  });
-});
-
-server.listen(8080, function(){
-  console.log('listening on *:' + 8080);
-});
-
-
- */
  
  
  app.use(function(req, res, next) {
@@ -97,84 +80,16 @@ server.listen(8080, function(){
 });
 // https://stackoverflow.com/questions/35014487/how-do-you-pass-a-socket-object-to-a-route
 
- /*
- io.on('connection', function(socket){
-	 
-  console.log('a user connected');
-
-  socket.emit('tx', 'msg');
-
-  socket.on('disconnect', function(){
-    console.log('user disconnected');
-  });
-});
- */
-
-
-
-
-
-
-var Chat = require('./routes/Chat');
 var BlockChain = require('./routes/BlockChain');
 
 
-
-
-
-
-
-
-
-
-
-
-
-    
-	app.allSockets =  [];
-	
-
-
-
-
-
-
-
-
-
- 
 
 MongoClient.connect('mongodb://localhost:27017/demoapp', function(err, db) {
     "use strict";
     if(err) throw err;
 
 	
-	 // app.io = io;
-  // app.io = socket_io();
-
-  io.sockets.on('connection', function (socket) {
-
-    // Create event handlers for this socket
-    var eventHandlers = {
-        chat: new Chat(app, socket)
-        , blockchain: new BlockChain(app, socket, db, multichain)
-    };
-
-    // Bind events to handlers
-    for (var category in eventHandlers) {
-        var handler = eventHandlers[category].handler;
-        for (var event in handler) {
-            socket.on(event, handler[event]);
-        }
-    }
-
-    // Keep track of the socket
-    app.allSockets.push(socket);
-});
-
-
-
-var todos = require('./routes/todos.ws.js')(io, db);
+var todos = require('./routes/Blockchain.js')(io, db, multichain);
 
 	routes(app, db, multichain, io);
     // Application routes

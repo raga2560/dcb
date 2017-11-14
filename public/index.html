@@ -13,6 +13,7 @@
 <body ng-controller="MainCtrl">
   <h1>Hello Servers!</h1>
   <button ng-click="send()"> send </button>
+  <button ng-click="listaddresses()"> listaddresses </button>
   
   <button ng-click="createasset()"> createasset </button>
   
@@ -72,9 +73,29 @@
 
 	 var socket = io('http://localhost:8080');
 	  
-	  var todosocket = io('http://localhost:8080/todos');
+	  var todosocket = io('http://localhost:8080/blockchain');
 	//   var socket = io('http://localhost:8080', {path:'/test'});
 
+	
+	$scope.listaddresses = function ()
+	 {
+		var msg = {
+		name:"test1"
+		};
+		// alert('hi');
+		 //var io1 = socket.connect();
+		todosocket.emit('getAllAddressesBC', msg);
+	 }
+	
+	
+	todosocket.on('allAddressesBC', function(msg) {
+	 alert(angular.toJson(msg));
+      console.log("message", msg);
+     // this.chats.push(msg);
+    });
+	
+
+	
 	$scope.createtodo = function ()
 	 {
 		var msg = {

@@ -2,109 +2,185 @@ var AssetsDAO = require('../assets').AssetsDAO;
 // https://stackoverflow.com/questions/37559610
 var blockchainconfig = require('./blockchainconfig.json');
 
-var BlockChain = function (app, socket, db, multichain) {
-    this.app = app;
-    this.socket = socket;
-    this.assets = new AssetsDAO(db, multichain);
-
-    // Expose handler methods for events
-    this.handler = {
-        createasset: createasset.bind(this) ,// use the bind function to access this.app
-        getasset:    getasset.bind(this) ,   // and this.socket in events
-		getinfo: getinfo.bind(this)
-    };
+var todosDBB = require('../blockstore').blockstore;
 
 
-// Events
-
-function createasset(data) {
-    // Broadcast message to all sockets
-    // this.app.allSockets.emit('message', text);
-	var mysock = this.socket ;
-	var assetmanageraddress = blockchainconfig.assetmanageraddress;
-	var assetname = data.name;
-	this.assets.issue(assetmanageraddress,assetname, function(err, record) {
-		
-		//console.log(record);
-		if(err) {
-			var myerror = {
-				name: 'Blockchain:createasset',
-				err : err
-			};
-			mysock.emit('error',myerror   );
-				
-			
-		}
-			mysock.emit('createdasset',record);
-		
-		});
-		
-	
-
-}
-
-function getinfo(text) {
-    // Broadcast message to all sockets
-    // this.app.allSockets.emit('message', text);
-	var mysock = this.socket ;
-	this.assets.getInfo(function(err, record) {
-		
-		//console.log(record);
-		if(err) {
-			mysock.emit('createdasset',err   );
-				
-			
-		}
-			mysock.emit('createdasset',record);
-		
-		});
-		
-	
-
-}
-
-function getasset(text) {
-    // Broadcast message to all sockets
-    // this.app.allSockets.emit('message', text);
-	this.socket.emit('gotasset', 'PONG!');
-}
-
-function ping() {
-    // Reply to sender
-    this.socket.emit('message', 'PONG!');
-};
-
-
-	
-	
-	
-  
-
-	
-	 
-	
+function BlockChain(io, db, multichain) {
     
-   
+    
+    var assets = new AssetsDAO(db, multichain);
+
+    
+    var blockchain = io.of('/blockchain');
+	var todosDB = new todosDBB(db);
+ 
+    blockchain.on('connection', function(socket) {
+ 
+        socket.on('getAllAssetsDB', function() {
+			
+            todosDB.getAllAssetsDB(function(err, data) {
+            if (err) {
+				var error ={
+					function:'getAllAssetsDB',
+					file:'BlockChain.js',
+					err: err
+				};
+				io.of('/blockchain').emit('errorReport', error);
+				//throw err; // You can emit the error to a socket 
+			}
+            io.of('/blockchain').emit('allAssetsDB', data);
+          });
+		
+        });
+ 
+        socket.on('getAllAssetsBC', function() {
 	
-	function getInfo() {
+		    assets.listAssets( function(err, record) {
 		
-		assets.getInfo(function(err, record) {
 		
-		//console.log(record);
-		if(err) {
+			if(err) {
+			var error ={
+					function:'getAllAssetsBC',
+					file:'BlockChain.js',
+					err: err
+				};
+			io.of('/blockchain').emit('errorReport', error);
+				
 			
-				return (err);
-			
-		}
+		    }
+			io.of('/blockchain').emit('allAssetsBC', record);
 		
-		return (record);
 		});
-	}
-
+		});
+		
+		socket.on('getAllAddressesBC', function() {
+	
+		    assets.listAddresses( function(err, record) {
+		
+		
+			if(err) {
+			var error ={
+					function:'getAllAddressesBC',
+					file:'BlockChain.js',
+					err: err
+				};
+			io.of('/blockchain').emit('errorReport', error);
+				
+			
+		    }
+			io.of('/blockchain').emit('allAddressesBC', record);
+		
+		});
+		});
+		socket.on('issueAsset', function(data) {
+			/*
+			{
+            address: address1, 
+            asset: {
+                name: "foocoin",
+                open: true
+            },
+            qty: 1000, 
+            units: 0.1
+            }
+			*/
+	
+		    assets.issue(data.address, data.asset, data.qty, data.details, function(err, tx) {
+		
+		
+			if(err) {
+			var error ={
+					function:'issueAsset',
+					file:'BlockChain.js',
+					err: err
+				};
+			io.of('/blockchain').emit('errorReport', error);
+				
+			
+		    }
+			var msg = {
+				tx: tx,
+				addresses: data.address
+			};
+			
+			todosDB.saveTransaction(msg, function(err, data) {
+            if (err) {
+				var error ={
+					function:'issueAsset',
+					file:'BlockChain.js',
+					err: err
+				};
+				io.of('/blockchain').emit('errorReport', error);
+				//throw err; // You can emit the error to a socket 
+			}
+            io.of('/blockchain').emit('issuedAsset', msg);
+          });
+		  
+			
+		
+		});
+		});
+		
+		socket.on('issueAsset', function(data) {
+			/*
+			{
+			from: fromaddress
+            to: toaddress, 
+            asset: {
+                name: "foocoin",
+                open: true
+            },
+            qty: 1000, 
+            units: 0.1
+            }
+			*/
+	
+		    assets.issueFrom(data.fromaddress, data.toaddress, data.asset, data.qty, data.details, function(err, tx) {
+		
+		
+			if(err) {
+			var error ={
+					function:'issueAsset',
+					file:'BlockChain.js',
+					err: err
+				};
+			io.of('/blockchain').emit('errorReport', error);
+				
+			
+		    }
+			
+			var msg = {
+				tx: tx,
+				addresses: [data.fromaddress, data.toaddress]
+				};
+			
+			todosDB.saveTransaction(msg, function(err, data) {
+            if (err) {
+				var error ={
+					function:'issueAsset',
+					file:'BlockChain.js',
+					err: err
+				};
+				io.of('/blockchain').emit('errorReport', error);
+				//throw err; // You can emit the error to a socket 
+			}
+            io.of('/blockchain').emit('issuedAsset', msg);
+          });
+		  
+			
+		
+		});
 	
 	
-
+	
+		});
+ 
+   
+   });
+ 
+ return blockchain;
 }
-module.exports = BlockChain;
 
+
+module.exports = BlockChain;
 

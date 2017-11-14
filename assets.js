@@ -36,7 +36,7 @@ function AssetsDAO(db, multichain) {
         return new AssetsDAO(db);
     }
 
-    var sportsdata = db.collection("sports");
+    var sportsdata = db.collection("assets");
 	
 var multichainp = bluebird.promisifyAll((multichain), {suffix: "Promise"});	
 	
@@ -88,11 +88,55 @@ var someTxId = '231a4f30e2eeba817e4277e39ca65880ff848c52694bf789c5dc0af0ac8bbc31
 
 	
 
-	this.issue = function (someAddress, assetname, callback) {
+	this.listAssets = function ( callback) {
+        "use strict";
+
+		console.log('listAssets');
+		multichain.listAssetsPromise().then(assets => {
+        assert(assets);
+        callback(null, assets);
+		})
+		.catch(err => {
+        console.log(err)
+		callback(err, null);
+        
+		})
+
+
+
+	}
+	
+	this.listAddresses = function ( callback) {
         "use strict";
 
 		console.log(someAddress);
-		multichain.issuePromise({address: someAddress, asset: assetname, qty: 50000, units: 0.01, details: {hello: "world"}}, (err, res) => {
+		multichain.listAddressesPromise().then(addresses => {
+        assert(addresses);
+        callback(null, addresses);
+		})
+		.catch(err => {
+        console.log(err)
+		callback(err, null);
+        
+		})
+
+
+
+	}
+	
+	
+	this.issue = function ( toaddr,assetname, qty, details,  callback) {
+        "use strict";
+
+		var msg = {
+			
+            address: toaddr,
+            asset: assetname,
+            qty: qty,
+            details: details
+		};
+		console.log(someAddress);
+		multichain.issuePromise(msg, (err, res) => {
 		if(err){
 			console.log(err);
 			callback(err, null);
@@ -123,6 +167,54 @@ var someTxId = '231a4f30e2eeba817e4277e39ca65880ff848c52694bf789c5dc0af0ac8bbc31
 
 
 	}
+	
+			
+	this.issueFrom = function (fromaddr, toaddr,assetname, qty, details,  callback) {
+        "use strict";
+
+		var msg = {
+			from: fromaddr,
+            to: toaddr,
+            asset: assetname,
+            qty: qty,
+            details: details
+		};
+	
+	
+		console.log(someAddress);
+		multichain.issueFromPromise(msg, (err, res) => {
+		if(err){
+			console.log(err);
+			callback(err, null);
+        
+		}
+		console.log(res);
+		callback(null, res);
+		
+		}).then(issueTxid => {
+        assert(issueTxid);
+        listenForConfirmations(issueTxid, (err, confirmed) => {
+            if(err){
+                callback(err, null);
+            }
+            if(confirmed === true){
+                //confirmCallback1.call(this);
+				
+				callback(null, res);
+            }
+        })
+    })
+    .catch(err => {
+        console.log(err)
+		callback(err, null);
+        
+    })
+
+
+
+	}
+
+	
 
 	this.getRawTransaction = function (someTxId,  callback) {
         "use strict";
@@ -158,60 +250,24 @@ var someTxId = '231a4f30e2eeba817e4277e39ca65880ff848c52694bf789c5dc0af0ac8bbc31
 
 
 	}
+	// getAllAssets
+	
+	/*
+	
+	transactions
+	initiator
+	confirmations
+	assetid
+	owner of asset
+	
+	how many assets does a user have
+	
+	user-assets, transaction 
+	
+	transactions, addresses, initiator
 	
 	
-	this.insertplayer = function (player,  callback) {
-        "use strict";
-        
-		
-
-        
-
-		  
-			
-			sportsdata.insert(player, function (err, result) {
-            "use strict";
-
-            if (!err) {
-                console.log("Inserted new player");
-                return callback(null, result[0]);
-            }
-
-            return callback(err, null);
-			});
-		
-
-		
-		
-    }
-	
-	
-	this.getplayer = function(player, callback) {
-        "use strict";
-		
-        sportsdata.findOne({'name': player.name}, function(err, data) {
-            "use strict";
-
-			console.log(data);
-            if (err) return callback(err, null);
-
-            callback(null, data);
-        });
-    }
-	
-	this.getplayers = function( callback) {
-        "use strict";
-		
-        sportsdata.find({}).toArray(function(err, data) {
-            "use strict";
-
-			console.log(data);
-            if (err) return callback(err, null);
-
-            callback(null, data);
-        });
-    }
-	
+	*/
 	
 	
 }
