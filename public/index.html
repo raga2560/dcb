@@ -18,6 +18,9 @@
   
   <button ng-click="getasset()"> getasset </button>
   
+  <button ng-click="createtodo()"> createtodo </button>
+    <button ng-click="gettodo()"> gettodo </button>
+  assetname<input ng-model="msg.name" />
   <div ng-repeat="player in players"        class="player">
     <div><span ng-bind="player.name"></span></div>
     <div> playing <span ng-bind="player.game"></span></div>
@@ -61,12 +64,47 @@
       
       $scope.players = [];
       $scope.newplayer = {};
+	  $scope.msg = {
+			name:'hello'
+		};
+	
 	   //var socket = io(); 
 
 	 var socket = io('http://localhost:8080');
 	  
+	  var todosocket = io('http://localhost:8080/todos');
 	//   var socket = io('http://localhost:8080', {path:'/test'});
 
+	$scope.createtodo = function ()
+	 {
+		var msg = {
+		name:"test1"
+		};
+		// alert('hi');
+		 //var io1 = socket.connect();
+		todosocket.emit('saveTodo', msg);
+	 }
+	
+	todosocket.on('allTodos', function(msg) {
+	 alert(angular.toJson(msg));
+      console.log("message", msg);
+     // this.chats.push(msg);
+    });
+	
+	$scope.gettodo = function ()
+	 {
+		var msg = {
+		name:"test1"
+		};
+		// alert('hi');
+		 //var io1 = socket.connect();
+		todosocket.emit('getAllTodos', msg);
+	 }
+	
+	
+	
+	
+	 
 	 $scope.send = function ()
 	 {
 		var msg = "test1";
@@ -74,13 +112,14 @@
 		 //var io1 = socket.connect();
 		socket.emit('message', msg);
 	 }
-	 
+	 	
 	  $scope.createasset = function ()
 	 {
-		var msg = "test1";
+		
+		
 		// alert('hi');
 		 //var io1 = socket.connect();
-		socket.emit('createasset', msg);
+		socket.emit('createasset', $scope.msg);
 	 }
 	  socket.on('createdasset', function(msg) {
 	 alert(angular.toJson(msg));

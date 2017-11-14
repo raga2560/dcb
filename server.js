@@ -3,6 +3,7 @@ var express = require('express')
   , bodyParser = require('body-parser')
   , server = require('http').createServer(app)
   , io = require('socket.io')(server)
+  
 /*  , iotest = require('socket.io')(server, {
 	  path: '/test',
   serveClient: false,
@@ -173,7 +174,7 @@ MongoClient.connect('mongodb://localhost:27017/demoapp', function(err, db) {
 
 
 
-
+var todos = require('./routes/todos.ws.js')(io, db);
 
 	routes(app, db, multichain, io);
     // Application routes

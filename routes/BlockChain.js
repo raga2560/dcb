@@ -1,5 +1,6 @@
 var AssetsDAO = require('../assets').AssetsDAO;
 // https://stackoverflow.com/questions/37559610
+var blockchainconfig = require('./blockchainconfig.json');
 
 var BlockChain = function (app, socket, db, multichain) {
     this.app = app;
@@ -16,16 +17,21 @@ var BlockChain = function (app, socket, db, multichain) {
 
 // Events
 
-function createasset(text) {
+function createasset(data) {
     // Broadcast message to all sockets
     // this.app.allSockets.emit('message', text);
 	var mysock = this.socket ;
-	var someAddress = '1PuAGAudofQAC4hrE2vWf1QwVBiFXCdZWKzV5r';
-	this.assets.issue(someAddress, function(err, record) {
+	var assetmanageraddress = blockchainconfig.assetmanageraddress;
+	var assetname = data.name;
+	this.assets.issue(assetmanageraddress,assetname, function(err, record) {
 		
 		//console.log(record);
 		if(err) {
-			mysock.emit('createdasset',err   );
+			var myerror = {
+				name: 'Blockchain:createasset',
+				err : err
+			};
+			mysock.emit('error',myerror   );
 				
 			
 		}
