@@ -38,7 +38,7 @@ function AssetsDAO(db, multichain) {
 
     var sportsdata = db.collection("assets");
 	
-var multichainp = bluebird.promisifyAll((multichain), {suffix: "Promise"});	
+	var multichainp = bluebird.promisifyAll((multichain), {suffix: "Promise"});	
 	
 	
 	

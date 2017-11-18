@@ -94,6 +94,29 @@ function BlockChain(io, db, multichain) {
 		});
 		});
 		
+		socket.on('getNewAddress', function(data) {
+			
+	
+		    assets.getNewAddress( function(err, record) {
+		
+		
+			if(err) {
+			var error ={
+					function:'getNewAddress',
+					file:'BlockChain.js',
+					err: err
+				};
+			io.of('/blockchain').emit('errorReport', error);
+				
+			
+		    }
+			io.of('/blockchain').emit('gotNewAddress', record);
+		
+		});
+		});
+		
+		
+		
 		socket.on('grantPermission', function(data) {
 			/*
 			{
