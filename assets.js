@@ -106,6 +106,89 @@ var someTxId = '231a4f30e2eeba817e4277e39ca65880ff848c52694bf789c5dc0af0ac8bbc31
 
 	}
 	
+	
+	this.getNewAddress = function ( callback) {
+        "use strict";
+
+		// console.log(someAddress);
+		multichain.getNewAddressPromise().then(address => {
+        assert(address);
+        callback(null, address);
+		})
+		.catch(err => {
+        console.log(err)
+		callback(err, null);
+        
+		})
+
+
+
+	}
+	
+	this.grantPermission = function (address, callback) {
+        "use strict";
+
+		// console.log(someAddress);
+		var grant = {
+		 addresses: address,
+            permissions: "send,receive,issue,admin"
+		};
+		
+		multichain.grantPromise(grant).then(permissionTxid => {
+        assert(permissionTxid);
+        listenForConfirmations(permissionTxid, (err, confirmed) => {
+            if(err){
+                callback(err, null);
+            }
+            if(confirmed === true){
+                //confirmCallback1.call(this);
+				
+				callback(null, res);
+            }
+        })
+    })
+    .catch(err => {
+        console.log(err)
+		callback(err, null);
+        
+    })
+
+
+
+
+
+	}
+	
+	
+	this.getAddressBalances = function (address,minconf, callback) {
+        "use strict";
+
+		// console.log(someAddress);
+		var query = {
+		 address: address,
+            minconf: minconf
+		};
+		
+		
+		multichain.getAddressBalancesPromise(query).then(balances => {
+        assert(balances);
+        	callback(null, balances);
+        
+    })
+    .catch(err => {
+        console.log(err)
+		callback(err, null);
+        
+    })
+
+
+
+
+
+	}
+	
+	
+	
 	this.listAddresses = function ( callback) {
         "use strict";
 
@@ -168,6 +251,50 @@ var someTxId = '231a4f30e2eeba817e4277e39ca65880ff848c52694bf789c5dc0af0ac8bbc31
 
 	}
 	
+		this.issueMore = function ( toaddr,assetname, qty, details,  callback) {
+        "use strict";
+
+		var msg = {
+			
+            address: toaddr,
+            asset: assetname,
+            qty: qty,
+            details: details
+		};
+		console.log(someAddress);
+		multichain.issueMorePromise(msg, (err, res) => {
+		if(err){
+			console.log(err);
+			callback(err, null);
+        
+		}
+		console.log(res);
+		callback(null, res);
+		
+		}).then(issueTxid => {
+        assert(issueTxid);
+        listenForConfirmations(issueTxid, (err, confirmed) => {
+            if(err){
+                callback(err, null);
+            }
+            if(confirmed === true){
+                //confirmCallback1.call(this);
+				
+				callback(null, res);
+            }
+        })
+    })
+    .catch(err => {
+        console.log(err)
+		callback(err, null);
+        
+    })
+
+
+
+	}
+
+	
 			
 	this.issueFrom = function (fromaddr, toaddr,assetname, qty, details,  callback) {
         "use strict";
@@ -213,6 +340,55 @@ var someTxId = '231a4f30e2eeba817e4277e39ca65880ff848c52694bf789c5dc0af0ac8bbc31
 
 
 	}
+
+
+	this.sendAssetFromWithMetadata = function (fromaddr, toaddr,assetname, qty, details, metadata,  callback) {
+        "use strict";
+
+		var msg = {
+			from: fromaddr,
+            to: toaddr,
+            asset: assetname,
+            qty: qty,
+            details: details,
+			data: new Buffer(metadata).toString("hex")
+
+		};
+	
+	
+		console.log(someAddress);
+		multichain.sendWithMetadataFromPromise(msg, (err, res) => {
+		if(err){
+			console.log(err);
+			callback(err, null);
+        
+		}
+		console.log(res);
+		callback(null, res);
+		
+		}).then(issueTxid => {
+        assert(issueTxid);
+        listenForConfirmations(issueTxid, (err, confirmed) => {
+            if(err){
+                callback(err, null);
+            }
+            if(confirmed === true){
+                //confirmCallback1.call(this);
+				
+				callback(null, res);
+            }
+        })
+    })
+    .catch(err => {
+        console.log(err)
+		callback(err, null);
+        
+    })
+
+
+
+	}
+
 
 	
 
