@@ -10,24 +10,126 @@ angular.module('myapp.controllers', ['chart.js'])
         return input.slice(start);
     }
 })
-.controller('AssetManagement', function($scope, $stateParams, VisualappService) {
-	
-	$scope.username = "";
-	$scope.emailid = "";
-	
-// pai chart
-// line graph
-
-
-})
 
 .controller('AddressManagement', function($scope, $stateParams, VisualappService) {
 	
 	var blocksocket = io('http://localhost:8080/blockchain');
 	$scope.address = {
-			listaddress:listaddress ,
-			alladdress :''
+			listaddress:listaddress,
+			createaddress: createaddress,
+			getasset: getasset,
+			getassets: getassets,
+			getuserasset: getuserasset,
+			getuserassets: getuserassets,
+			sendasset: sendasset,
+			senduserasset: senduserasset,
+			updateuserasset: updateuserasset,
+			createasset: createasset,
+			issuemoreasset: issuemoreasset,
+			createuserasset: createuserasset,
+			issuemoreuserasset: issuemoreuserasset,
+			updateasset: updateasset,
+			updateassetmetadata: updateassetmetadata,
+			createassetmetadata: createassetmetadata,
+			updateusermetadata: updateusermetadata,
+			
+			gotasset: '',
+			alladdress :'',
+			gotassets :'',
+			sentasset: '',
+			updateduserasset:'',
+			sentuserasset:'',
+			issuedmoreuserasset:'',
+			issuedmoreasset:'',
+			createduserasset:'',
+			gotaddress :''
 	};
+	
+	$scope.input = {
+			assetaddress:'',
+			assetdata:'',
+			assetmetadata:'',
+			useraddress:'',
+			usermetadata:'',
+			fromuseraddress:'',
+			touseraddress:''
+	};
+	
+	
+	
+	$scope.issuemoreasset = function ()
+	{
+		// alert('hi');
+		// var io1 = socket.connect();
+		socket.emit('issuemoreuserasset', $scope.msg);
+	}
+	
+	socket.on('issuedmoreasset', function(msg) {
+		
+		alert(angular.toJson(msg));
+		
+		$scope.issuedmoreasset = msg;
+		
+		console.log("message", msg);
+		// this.chats.push(msg);
+    });
+	
+	
+	
+	$scope.issuemoreuserasset = function ()
+	{
+		// alert('hi');
+		// var io1 = socket.connect();
+		socket.emit('issuemoreuserasset', $scope.msg);
+	}
+	
+	socket.on('issuedmoreuserasset', function(msg) {
+		
+		alert(angular.toJson(msg));
+		
+		$scope.issuedmoreuserasset = msg;
+		
+		console.log("message", msg);
+		// this.chats.push(msg);
+    });
+	
+	
+	
+	$scope.createasset = function ()
+	{
+		// alert('hi');
+		// var io1 = socket.connect();
+		socket.emit('createasset', $scope.msg);
+	}
+	
+	socket.on('createdasset', function(msg) {
+		
+		alert(angular.toJson(msg));
+		
+		$scope.createdasset = msg;
+		
+		console.log("message", msg);
+		// this.chats.push(msg);
+    });
+	
+	$scope.createuserasset = function ()
+	{
+		// alert('hi');
+		// var io1 = socket.connect();
+		socket.emit('createuserasset', $scope.msg);
+	}
+	
+	socket.on('createduserasset', function(msg) {
+		
+		alert(angular.toJson(msg));
+		
+		$scope.createduserasset = msg;
+		
+		console.log("message", msg);
+		// this.chats.push(msg);
+    });
+	
+	
 	
 	 function listaddress ()
 	 {
@@ -43,14 +145,154 @@ angular.module('myapp.controllers', ['chart.js'])
 	blocksocket.on('allAddressesBC', function(msg) {
 		 
 		 $scope.$apply(function(){
-			 $scope.address.alladdress = msg;
+		
+			$scope.address.alladdress = msg;
                         
         });
 		
-		// alert(angular.toJson($scope.address.alladdress));
-		console.log("message", msg);
+		
+    });
+	
+	function createaddress ()
+	{
+	
+	var msg = {
+		name:"test1"
+		};
+		// alert('hi');
+		//var io1 = socket.connect();
+		todosocket.emit('getNewAddress', msg);
+	 }
+	
+	todosocket.on('gotNewAddress', function(msg) {
+		//alert(angular.toJson(msg));
+		//console.log("message", msg);
+		$scope.gotaddress = msg;
 		// this.chats.push(msg);
     });
+	
+	$scope.getasset = function ()
+	 {
+		
+		if($scope.input.assetaddress == '')
+		{
+			alert('assetaddress not set');
+			return;
+		}
+		socket.emit('getasset', $scope.input);
+	 }
+	 
+	 $scope.getuserasset = function ()
+	 {
+		
+		if($scope.input.assetaddress == '')
+		{
+			alert('assetaddress not set');
+			return;
+		}
+		if($scope.input.useraddress == '')
+		{
+			alert('useraddress not set');
+			return;
+		}
+		socket.emit('getuserasset', $scope.input);
+	 }
+	 
+	 
+	socket.on('gotasset', function(msg) {
+		$scope.gotasset = msg;
+	
+    });
+	
+	$scope.getassets = function ()
+	 {
+		
+		
+		socket.emit('getassets', $scope.input);
+	 }
+	 
+	 $scope.getuserassets = function ()
+	 {
+		
+		
+		if($scope.input.useraddress == '')
+		{
+			alert('useraddress not set');
+			return;
+		}
+		socket.emit('getuserassets', $scope.input);
+	 }
+	 
+	 
+	socket.on('gotassets', function(msg) {
+		$scope.gotassets = msg;
+	
+    });
+	
+	$scope.sendasset = function ()
+	 {
+		
+		
+		if($scope.input.assetaddress == '')
+		{
+			alert('assetaddress not set');
+			return;
+		}
+		socket.emit('sendasset', $scope.input);
+	 }
+	 
+	 
+	socket.on('sentasset', function(msg) {
+		$scope.sentasset = msg;
+	
+    });
+	$scope.senduserasset = function ()
+	 {
+		
+		if($scope.input.useraddress == '')
+		{
+			alert('useraddress not set');
+			return;
+		}
+		
+		if($scope.input.assetaddress == '')
+		{
+			alert('assetaddress not set');
+			return;
+		}
+		socket.emit('senduserasset', $scope.input);
+	 }
+	 
+	 
+	socket.on('sentuserasset', function(msg) {
+		$scope.sentuserasset = msg;
+	
+    });
+	
+	$scope.updateuserasset = function ()
+	 {
+		
+		if($scope.input.useraddress == '')
+		{
+			alert('useraddress not set');
+			return;
+		}
+		
+		if($scope.input.assetaddress == '')
+		{
+			alert('assetaddress not set');
+			return;
+		}
+		socket.emit('updateuserasset', $scope.input);
+	 }
+	 
+	 
+	socket.on('updateduserasset', function(msg) {
+		$scope.updateduserasset = msg;
+	
+    });
+	
+	
 
 })
 .controller('VisualSalesbyMonthCtrl', function($scope, $stateParams, VisualappService) {
