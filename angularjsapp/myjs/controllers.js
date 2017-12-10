@@ -13,7 +13,7 @@ angular.module('myapp.controllers', ['chart.js'])
 
 .controller('AddressManagement', function($scope, $stateParams, VisualappService) {
 	
-	var blocksocket = io('http://localhost:8080/blockchain');
+	var socket = io('http://localhost:8080/blockchain');
 	$scope.address = {
 			listaddress:listaddress,
 			createaddress: createaddress,
@@ -28,11 +28,11 @@ angular.module('myapp.controllers', ['chart.js'])
 			issuemoreasset: issuemoreasset,
 			createuserasset: createuserasset,
 			issuemoreuserasset: issuemoreuserasset,
-			updateasset: updateasset,
+/*			updateasset: updateasset,
 			updateassetmetadata: updateassetmetadata,
 			createassetmetadata: createassetmetadata,
 			updateusermetadata: updateusermetadata,
-			
+		*/	
 			gotasset: '',
 			alladdress :'',
 			gotassets :'',
@@ -57,7 +57,7 @@ angular.module('myapp.controllers', ['chart.js'])
 	
 	
 	
-	$scope.issuemoreasset = function ()
+	function issuemoreasset  ()
 	{
 		// alert('hi');
 		// var io1 = socket.connect();
@@ -76,7 +76,7 @@ angular.module('myapp.controllers', ['chart.js'])
 	
 	
 	
-	$scope.issuemoreuserasset = function ()
+	function issuemoreuserasset  ()
 	{
 		// alert('hi');
 		// var io1 = socket.connect();
@@ -95,7 +95,7 @@ angular.module('myapp.controllers', ['chart.js'])
 	
 	
 	
-	$scope.createasset = function ()
+	function createasset  ()
 	{
 		// alert('hi');
 		// var io1 = socket.connect();
@@ -112,7 +112,7 @@ angular.module('myapp.controllers', ['chart.js'])
 		// this.chats.push(msg);
     });
 	
-	$scope.createuserasset = function ()
+	function createuserasset  ()
 	{
 		// alert('hi');
 		// var io1 = socket.connect();
@@ -138,11 +138,11 @@ angular.module('myapp.controllers', ['chart.js'])
 		};
 		 alert('hi');
 		//var io1 = socket.connect();
-		blocksocket.emit('getAllAddressesBC', msg);
+		socket.emit('getAllAddressesBC', msg);
 	 }
 	
 	$scope.address.alladdress = 'test1';
-	blocksocket.on('allAddressesBC', function(msg) {
+	socket.on('allAddressesBC', function(msg) {
 		 
 		 $scope.$apply(function(){
 		
@@ -161,18 +161,20 @@ angular.module('myapp.controllers', ['chart.js'])
 		};
 		// alert('hi');
 		//var io1 = socket.connect();
-		todosocket.emit('getNewAddress', msg);
+		socket.emit('getNewAddress', msg);
 	 }
 	
-	todosocket.on('gotNewAddress', function(msg) {
+	socket.on('gotNewAddress', function(msg) {
 		//alert(angular.toJson(msg));
 		//console.log("message", msg);
 		$scope.gotaddress = msg;
 		// this.chats.push(msg);
     });
 	
-	$scope.getasset = function ()
-	 {
+	function getasset ()
+
+	{
+
 		
 		if($scope.input.assetaddress == '')
 		{
@@ -182,7 +184,7 @@ angular.module('myapp.controllers', ['chart.js'])
 		socket.emit('getasset', $scope.input);
 	 }
 	 
-	 $scope.getuserasset = function ()
+	 function getuserasset  ()
 	 {
 		
 		if($scope.input.assetaddress == '')
@@ -204,14 +206,14 @@ angular.module('myapp.controllers', ['chart.js'])
 	
     });
 	
-	$scope.getassets = function ()
+	function getassets  ()
 	 {
 		
 		
 		socket.emit('getassets', $scope.input);
 	 }
 	 
-	 $scope.getuserassets = function ()
+	 function getuserassets  ()
 	 {
 		
 		
@@ -229,7 +231,7 @@ angular.module('myapp.controllers', ['chart.js'])
 	
     });
 	
-	$scope.sendasset = function ()
+	function sendasset  ()
 	 {
 		
 		
@@ -246,7 +248,7 @@ angular.module('myapp.controllers', ['chart.js'])
 		$scope.sentasset = msg;
 	
     });
-	$scope.senduserasset = function ()
+	function senduserasset  ()
 	 {
 		
 		if($scope.input.useraddress == '')
@@ -269,7 +271,7 @@ angular.module('myapp.controllers', ['chart.js'])
 	
     });
 	
-	$scope.updateuserasset = function ()
+	function updateuserasset  ()
 	 {
 		
 		if($scope.input.useraddress == '')

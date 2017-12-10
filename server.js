@@ -63,7 +63,6 @@ io.on("connection", function(socket) {
  app.use('/angularjsapp',express.static(__dirname + '/angularjsapp'));
  
  
- 
  app.use(function(req, res, next) {
 	 var allowedOrigins = ['http://127.0.0.1:8080', 'http://localhost:8080', 'http://127.0.0.1:8100', 'http://localhost:8100'];
   var origin = req.headers.origin;
@@ -81,7 +80,7 @@ io.on("connection", function(socket) {
 });
 // https://stackoverflow.com/questions/35014487/how-do-you-pass-a-socket-object-to-a-route
 
-var BlockChain = require('./routes/BlockChain');
+// var BlockChain = require('./routes/BlockChain');
 
 
 
@@ -89,8 +88,9 @@ MongoClient.connect('mongodb://localhost:27017/demoapp', function(err, db) {
     "use strict";
     if(err) throw err;
 
+console.log ("test1"); 
 	
-var todos = require('./routes/Blockchain.js')(io, db, multichain);
+var todos =  require('./routes/BlockChain')(io, db, multichain);
 
 	routes(app, db, multichain, io);
     // Application routes
